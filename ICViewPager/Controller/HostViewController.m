@@ -44,7 +44,7 @@
     
     [super viewDidAppear:animated];
     
-    [self performSelector:@selector(loadContent) withObject:nil afterDelay:3.0];
+    [self loadContent];
     
 }
 
@@ -120,11 +120,11 @@
         case ViewPagerOptionTabOffset:
             return 36.0;
         case ViewPagerOptionTabWidth:
-            return UIInterfaceOrientationIsLandscape(self.interfaceOrientation) ? 128.0 : 96.0;
+            return 40.0;
         case ViewPagerOptionFixFormerTabsPositions:
-            return 1.0;
+            return 0.0;
         case ViewPagerOptionFixLatterTabsPositions:
-            return 1.0;
+            return 0.0;
         default:
             return value;
     }

@@ -202,7 +202,7 @@
 
 - (void)layoutSubviews {
     
-    CGFloat topLayoutGuide = 0.0;    
+    CGFloat topLayoutGuide = 0.0;
     CGRect frame = self.tabsView.frame;
     frame.origin.x = 0.0;
     frame.origin.y = [self.tabLocation boolValue] ? topLayoutGuide : CGRectGetHeight(self.view.frame) - [self.tabHeight floatValue];
@@ -636,7 +636,7 @@
         
         CGRect frame = tabView.frame;
         frame.origin.x = contentSizeWidth;
-        frame.size.width = [self.tabWidth floatValue];
+        frame.size.width = ([self.dataSource respondsToSelector:@selector(viewPager:widthForTabAtIndex:)]) ? [self.dataSource viewPager:self widthForTabAtIndex:i] : [self.tabWidth floatValue];
         tabView.frame = frame;
         
         contentSizeWidth += CGRectGetWidth(tabView.frame);
@@ -828,7 +828,7 @@
         
         CGRect frame = tabView.frame;
         frame.origin.x = contentSizeWidth;
-        frame.size.width = [self.tabWidth floatValue];
+        frame.size.width = ([self.dataSource respondsToSelector:@selector(viewPager:widthForTabAtIndex:)]) ? [self.dataSource viewPager:self widthForTabAtIndex:i] : [self.tabWidth floatValue];
         tabView.frame = frame;
         
         [self.tabsView addSubview:tabView];
@@ -888,7 +888,8 @@
         tabViewContent.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
         
         // Create TabView and subview the content
-        TabView *tabView = [[TabView alloc] initWithFrame:CGRectMake(0.0, 0.0, [self.tabWidth floatValue], [self.tabHeight floatValue])];
+        CGFloat width = ([self.dataSource respondsToSelector:@selector(viewPager:widthForTabAtIndex:)]) ? [self.dataSource viewPager:self widthForTabAtIndex:index] : [self.tabWidth floatValue];
+        TabView *tabView = [[TabView alloc] initWithFrame:CGRectMake(0.0, 0.0, width, [self.tabHeight floatValue])];
         [tabView addSubview:tabViewContent];
         [tabView setClipsToBounds:YES];
         [tabView setIndicatorColor:self.indicatorColor];

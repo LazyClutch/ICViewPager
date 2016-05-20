@@ -135,6 +135,18 @@ typedef NS_ENUM(NSUInteger, ViewPagerComponent) {
  */
 - (UIView *)viewPager:(ViewPagerController *)viewPager viewForTabAtIndex:(NSUInteger)index;
 
+
+/**
+ * Asks dataSource to give a width for each tab.
+ * It is suggested to return a float value.
+ *
+ * @param viewPager The viewPager that's subject to
+ * @param index The index of the tab whose width is asked
+ *
+ * @return A width value that will be as tab's width at the given index
+ */
+- (CGFloat)viewPager:(ViewPagerController *)viewPager widthForTabAtIndex:(NSUInteger)index;
+
 @optional
 /**
  * The content for any tab. Return a view controller and ViewPager will use its view to show as content.
