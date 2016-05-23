@@ -747,8 +747,11 @@
     // Set self as new delegate
     ((UIScrollView *)[self.pageViewController.view.subviews objectAtIndex:0]).delegate = self;
     
-    self.pageViewController.dataSource = self;
     self.pageViewController.delegate = self;
+    if ([self.delegate respondsToSelector:@selector(viewPagerShouldSupportSwipeGesture:)]) {
+        BOOL canSwipe = [self.delegate viewPagerShouldSupportSwipeGesture:self];
+        self.pageViewController.dataSource = (canSwipe) ? self : nil;
+    }
     
     self.animatingToTab = NO;
     self.defaultSetupDone = NO;
@@ -944,13 +947,6 @@
 
 #pragma mark - UIPageViewControllerDelegate
 - (void)pageViewController:(UIPageViewController *)pageViewController didFinishAnimating:(BOOL)finished previousViewControllers:(NSArray *)previousViewControllers transitionCompleted:(BOOL)completed {
-    
-    if ([self.delegate respondsToSelector:@selector(viewPagerShouldSupportSwipeGesture:)]) {
-        BOOL supportSwipe = [self.delegate viewPagerShouldSupportSwipeGesture:self];
-        if (!supportSwipe) {
-            return;
-        }
-    }
     
     UIViewController *viewController = self.pageViewController.viewControllers[0];
     
