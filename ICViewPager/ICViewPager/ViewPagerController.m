@@ -102,6 +102,7 @@
 // Tab and content stuff
 @property UIScrollView *tabsView;
 @property UIView *contentView;
+@property UIView *lastActiveTabView;
 
 @property UIPageViewController *pageViewController;
 @property (assign) id<UIScrollViewDelegate> actualDelegate;
@@ -129,6 +130,7 @@
 
 // Colors
 @property (nonatomic) UIColor *indicatorColor;
+@property (nonatomic) UIColor *activeTabColor;
 @property (nonatomic) UIColor *tabsViewBackgroundColor;
 @property (nonatomic) UIColor *contentViewBackgroundColor;
 
@@ -942,6 +944,13 @@
 
 #pragma mark - UIPageViewControllerDelegate
 - (void)pageViewController:(UIPageViewController *)pageViewController didFinishAnimating:(BOOL)finished previousViewControllers:(NSArray *)previousViewControllers transitionCompleted:(BOOL)completed {
+    
+    if ([self.delegate respondsToSelector:@selector(viewPagerShouldSupportSwipeGesture:)]) {
+        BOOL supportSwipe = [self.delegate viewPagerShouldSupportSwipeGesture:self];
+        if (!supportSwipe) {
+            return;
+        }
+    }
     
     UIViewController *viewController = self.pageViewController.viewControllers[0];
     

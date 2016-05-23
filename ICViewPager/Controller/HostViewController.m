@@ -143,4 +143,9 @@
     }
 }
 
+- (BOOL)viewPagerShouldSupportSwipeGesture:(ViewPagerController *)viewPager
+{
+    return NO;
+}
+
 @end
