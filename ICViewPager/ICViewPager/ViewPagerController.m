@@ -748,10 +748,6 @@
     ((UIScrollView *)[self.pageViewController.view.subviews objectAtIndex:0]).delegate = self;
     
     self.pageViewController.delegate = self;
-    if ([self.delegate respondsToSelector:@selector(viewPagerShouldSupportSwipeGesture:)]) {
-        BOOL canSwipe = [self.delegate viewPagerShouldSupportSwipeGesture:self];
-        self.pageViewController.dataSource = (canSwipe) ? self : nil;
-    }
     
     self.animatingToTab = NO;
     self.defaultSetupDone = NO;
