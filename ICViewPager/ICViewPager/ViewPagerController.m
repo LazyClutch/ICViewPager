@@ -113,6 +113,7 @@
 // Tab and content stuff
 @property UIScrollView *tabsView;
 @property UIView *contentView;
+@property UIView *lastActiveTabView;
 
 @property UIPageViewController *pageViewController;
 @property (assign) id<UIScrollViewDelegate> actualDelegate;
@@ -140,6 +141,7 @@
 
 // Colors
 @property (nonatomic) UIColor *indicatorColor;
+@property (nonatomic) UIColor *activeTabColor;
 @property (nonatomic) UIColor *tabsViewBackgroundColor;
 @property (nonatomic) UIColor *contentViewBackgroundColor;
 
@@ -757,7 +759,6 @@
     // Set self as new delegate
     ((UIScrollView *)[self.pageViewController.view.subviews objectAtIndex:0]).delegate = self;
     
-    self.pageViewController.dataSource = self;
     self.pageViewController.delegate = self;
     
     self.animatingToTab = NO;
