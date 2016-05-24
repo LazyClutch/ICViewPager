@@ -100,7 +100,7 @@
         // Draw the indicator
         [bezierPath moveToPoint:CGPointMake(originX, CGRectGetHeight(rect) - 7.0)];
         [bezierPath addLineToPoint:CGPointMake(CGRectGetWidth(rect) - originX, CGRectGetHeight(rect) - 7.0)];
-        [bezierPath setLineWidth:5.0];
+        [bezierPath setLineWidth:3.0];
         [self.indicatorColor setStroke];
         [bezierPath stroke];
     }
