@@ -760,6 +760,7 @@
     ((UIScrollView *)[self.pageViewController.view.subviews objectAtIndex:0]).delegate = self;
     
     self.pageViewController.delegate = self;
+    self.pageViewController.dataSource = self;
     
     self.animatingToTab = NO;
     self.defaultSetupDone = NO;

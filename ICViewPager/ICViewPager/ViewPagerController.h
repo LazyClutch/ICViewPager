@@ -228,7 +228,5 @@ typedef NS_ENUM(NSUInteger, ViewPagerComponent) {
  */
 - (UIColor *)viewPager:(ViewPagerController *)viewPager colorForComponent:(ViewPagerComponent)component withDefault:(UIColor *)color;
 
-- (BOOL)viewPagerShouldSupportSwipeGesture:(ViewPagerController *)viewPager;
-
 
 @end
