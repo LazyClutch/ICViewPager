@@ -762,6 +762,7 @@
     self.pageViewController.delegate = self;
     self.pageViewController.dataSource = self;
     
+    
     self.animatingToTab = NO;
     self.defaultSetupDone = NO;
 }
