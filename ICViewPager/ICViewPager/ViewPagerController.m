@@ -84,11 +84,22 @@
     // Draw an indicator line if tab is selected
     if (self.selected) {
         
+        CGFloat textWidth = 0;
+        CGFloat originX = 0;
+        
+        for (UIView *view in self.subviews) {
+            if ([view isKindOfClass:[UILabel class]]) {
+                UILabel *label = (UILabel *)view;
+                textWidth = [label sizeThatFits:CGSizeMake(label.frame.size.width, label.frame.size.height)].width;
+                originX = (textWidth == 0) ? 0 : (self.frame.size.width - textWidth) / 2;
+            }
+        }
+        
         bezierPath = [UIBezierPath bezierPath];
         
         // Draw the indicator
-        [bezierPath moveToPoint:CGPointMake(0.0, CGRectGetHeight(rect) - 1.0)];
-        [bezierPath addLineToPoint:CGPointMake(CGRectGetWidth(rect), CGRectGetHeight(rect) - 1.0)];
+        [bezierPath moveToPoint:CGPointMake(originX, CGRectGetHeight(rect) - 1.0)];
+        [bezierPath addLineToPoint:CGPointMake(CGRectGetWidth(rect) - originX, CGRectGetHeight(rect) - 1.0)];
         [bezierPath setLineWidth:5.0];
         [self.indicatorColor setStroke];
         [bezierPath stroke];
@@ -301,6 +312,7 @@
     
     // Set to-be-active tab selected
     activeTabView = [self tabViewAtIndex:activeTabIndex];
+    
     activeTabView.selected = YES;
     
     // Set current activeTabIndex

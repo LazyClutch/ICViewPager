@@ -66,10 +66,10 @@
 
 #pragma mark - Helpers
 - (void)selectTabWithNumberFive {
-    [self selectTabAtIndex:5];
+    [self selectTabAtIndex:2];
 }
 - (void)loadContent {
-    self.numberOfTabs = 10;
+    self.numberOfTabs = 5;
 }
 
 #pragma mark - Interface Orientation Changes
@@ -120,7 +120,7 @@
         case ViewPagerOptionTabOffset:
             return 36.0;
         case ViewPagerOptionTabWidth:
-            return 40.0;
+            return 100.0;
         case ViewPagerOptionFixFormerTabsPositions:
             return 0.0;
         case ViewPagerOptionFixLatterTabsPositions:
