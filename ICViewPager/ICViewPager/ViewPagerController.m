@@ -963,6 +963,15 @@
     // Select tab
     NSUInteger index = [self indexForViewController:viewController];
     [self selectTabAtIndex:index didSwipe:YES];
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.pageViewController.view.userInteractionEnabled = YES;
+    });
+}
+
+- (void)pageViewController:(UIPageViewController *)pageViewController willTransitionToViewControllers:(NSArray<UIViewController *> *)pendingViewControllers
+{
+    self.pageViewController.view.userInteractionEnabled = NO;
 }
 
 #pragma mark - UIScrollViewDelegate, Responding to Scrolling and Dragging
