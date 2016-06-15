@@ -122,6 +122,8 @@
 @property NSMutableArray *tabs;
 @property NSMutableArray *contents;
 
+@property (nonatomic, getter=isPinning) BOOL pinning;
+
 // Options
 @property (nonatomic) NSNumber *tabHeight;
 @property (nonatomic) NSNumber *tabOffset;
@@ -217,6 +219,10 @@
 
 #pragma mark - IBAction
 - (IBAction)handleTapGesture:(id)sender {
+    
+    if (self.isPinning) {
+        return;
+    }
     
     // Get the desired page's index
     UITapGestureRecognizer *tapGestureRecognizer = (UITapGestureRecognizer *)sender;
@@ -1013,6 +1019,8 @@
     }
 }
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
+    [self setPinning:YES];
+    
     if ([self.actualDelegate respondsToSelector:@selector(scrollViewWillBeginDragging:)]) {
         [self.actualDelegate scrollViewWillBeginDragging:scrollView];
     }
@@ -1044,6 +1052,8 @@
     }
 }
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+    [self setPinning:NO];
+    
     if ([self.actualDelegate respondsToSelector:@selector(scrollViewDidEndDecelerating:)]) {
         [self.actualDelegate scrollViewDidEndDecelerating:scrollView];
     }
