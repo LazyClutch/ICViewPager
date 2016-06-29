@@ -969,10 +969,6 @@
     // Select tab
     NSUInteger index = [self indexForViewController:viewController];
     [self selectTabAtIndex:index didSwipe:YES];
-    
-    dispatch_async(dispatch_get_main_queue(), ^{
-        self.pageViewController.view.userInteractionEnabled = YES;
-    });
 }
 
 - (void)pageViewController:(UIPageViewController *)pageViewController willTransitionToViewControllers:(NSArray<UIViewController *> *)pendingViewControllers
@@ -1053,6 +1049,10 @@
 }
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
     [self setPinning:NO];
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.pageViewController.view.userInteractionEnabled = YES;
+    });
     
     if ([self.actualDelegate respondsToSelector:@selector(scrollViewDidEndDecelerating:)]) {
         [self.actualDelegate scrollViewDidEndDecelerating:scrollView];
