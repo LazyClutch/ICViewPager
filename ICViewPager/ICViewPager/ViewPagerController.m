@@ -107,6 +107,35 @@
 }
 @end
 
+@interface UICustomerPageViewController : UIPageViewController
+
+@end
+
+@implementation UICustomerPageViewController
+
+- (void) setViewControllers:(NSArray*)viewControllers direction:(UIPageViewControllerNavigationDirection)direction animated:(BOOL)animated completion:(void (^)(BOOL))completion {
+    
+    if (!animated) {
+        [super setViewControllers:viewControllers direction:direction animated:NO completion:completion];
+        return;
+    }
+    
+    [super setViewControllers:viewControllers direction:direction animated:YES completion:^(BOOL finished){
+        
+        if (finished) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [super setViewControllers:viewControllers direction:direction animated:NO completion:completion];
+            });
+        } else {
+            if (completion != NULL) {
+                completion(finished);
+            }
+        }
+    }];
+}
+
+@end
+
 #pragma mark - ViewPagerController
 @interface ViewPagerController () <UIPageViewControllerDataSource, UIPageViewControllerDelegate, UIScrollViewDelegate>
 
@@ -115,7 +144,7 @@
 @property UIView *contentView;
 @property UIView *lastActiveTabView;
 
-@property UIPageViewController *pageViewController;
+@property UICustomerPageViewController *pageViewController;
 @property (assign) id<UIScrollViewDelegate> actualDelegate;
 
 // Tab and content cache
@@ -364,44 +393,50 @@
     }
     
     // __weak pageViewController to be used in blocks to prevent retaining strong reference to self
-    __weak UIPageViewController *weakPageViewController = self.pageViewController;
+    __weak UICustomerPageViewController *weakPageViewController = self.pageViewController;
     __weak ViewPagerController *weakSelf = self;
     
     if (activeContentIndex == self.activeContentIndex) {
         
-        [self.pageViewController setViewControllers:@[viewController]
-                                          direction:UIPageViewControllerNavigationDirectionForward
-                                           animated:NO
-                                         completion:^(BOOL completed) {
-                                             weakSelf.animatingToTab = NO;
-                                         }];
+        dispatch_async(dispatch_get_main_queue(), ^(void) {
+            [self.pageViewController setViewControllers:@[viewController]
+                                              direction:UIPageViewControllerNavigationDirectionForward
+                                               animated:NO
+                                             completion:^(BOOL completed) {
+                                                 weakSelf.animatingToTab = NO;
+                                             }];
+        });
         
     } else if (!(activeContentIndex + 1 == self.activeContentIndex || activeContentIndex - 1 == self.activeContentIndex)) {
-        
-        [self.pageViewController setViewControllers:@[viewController]
-                                          direction:(activeContentIndex < self.activeContentIndex) ? UIPageViewControllerNavigationDirectionReverse : UIPageViewControllerNavigationDirectionForward
-                                           animated:YES
-                                         completion:^(BOOL completed) {
-                                             
-                                             weakSelf.animatingToTab = NO;
-                                             
-                                             // Set the current page again to obtain synchronisation between tabs and content
-                                             dispatch_async(dispatch_get_main_queue(), ^{
-                                                 [weakPageViewController setViewControllers:@[viewController]
-                                                                                  direction:(activeContentIndex < weakSelf.activeContentIndex) ? UIPageViewControllerNavigationDirectionReverse : UIPageViewControllerNavigationDirectionForward
-                                                                                   animated:NO
-                                                                                 completion:nil];
-                                             });
-                                         }];
+        UIPageViewControllerNavigationDirection direction = (activeContentIndex < self.activeContentIndex) ? UIPageViewControllerNavigationDirectionReverse : UIPageViewControllerNavigationDirectionForward;
+        dispatch_async(dispatch_get_main_queue(), ^(void) {
+            [self.pageViewController setViewControllers:@[viewController]
+                                              direction:direction
+                                               animated:YES
+                                             completion:^(BOOL completed) {
+                                                 
+                                                 weakSelf.animatingToTab = NO;
+                                                 
+                                                 // Set the current page again to obtain synchronisation between tabs and content
+                                                 dispatch_async(dispatch_get_main_queue(), ^{
+                                                     [weakPageViewController setViewControllers:@[viewController]
+                                                                                      direction:(activeContentIndex < weakSelf.activeContentIndex) ? UIPageViewControllerNavigationDirectionReverse : UIPageViewControllerNavigationDirectionForward
+                                                                                       animated:NO
+                                                                                     completion:nil];
+                                                 });
+                                             }];
+        });
         
     } else {
-        
-        [self.pageViewController setViewControllers:@[viewController]
-                                          direction:(activeContentIndex < self.activeContentIndex) ? UIPageViewControllerNavigationDirectionReverse : UIPageViewControllerNavigationDirectionForward
-                                           animated:YES
-                                         completion:^(BOOL completed) {
-                                             weakSelf.animatingToTab = NO;
-                                         }];
+        UIPageViewControllerNavigationDirection direction = (activeContentIndex < self.activeContentIndex) ? UIPageViewControllerNavigationDirectionReverse : UIPageViewControllerNavigationDirectionForward;
+        dispatch_async(dispatch_get_main_queue(), ^(void) {
+            [self.pageViewController setViewControllers:@[viewController]
+                                              direction:direction
+                                               animated:YES
+                                             completion:^(BOOL completed) {
+                                                 weakSelf.animatingToTab = NO;
+                                             }];
+        });
     }
     
     // Clean out of sight contents
@@ -754,9 +789,9 @@
 - (void)defaultSettings {
     
     // pageViewController
-    self.pageViewController = [[UIPageViewController alloc] initWithTransitionStyle:UIPageViewControllerTransitionStyleScroll
-                                                              navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal
-                                                                            options:nil];
+    self.pageViewController = [[UICustomerPageViewController alloc] initWithTransitionStyle:UIPageViewControllerTransitionStyleScroll
+                                                                      navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal
+                                                                                    options:nil];
     [self addChildViewController:self.pageViewController];
 
     // Setup some forwarding events to hijack the scrollView
