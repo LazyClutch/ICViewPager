@@ -113,6 +113,15 @@
 
 @implementation UICustomerPageViewController
 
+- (instancetype)initWithTransitionStyle:(UIPageViewControllerTransitionStyle)style navigationOrientation:(UIPageViewControllerNavigationOrientation)navigationOrientation options:(NSDictionary<NSString *,id> *)options
+{
+    self = [super initWithTransitionStyle:style navigationOrientation:navigationOrientation options:options];
+    
+    self.edgesForExtendedLayout = UIRectEdgeNone;
+    
+    return self;
+}
+
 - (void) setViewControllers:(NSArray*)viewControllers direction:(UIPageViewControllerNavigationDirection)direction animated:(BOOL)animated completion:(void (^)(BOOL))completion {
     
     if (!animated) {
@@ -414,16 +423,17 @@
                                               direction:direction
                                                animated:YES
                                              completion:^(BOOL completed) {
-                                                 
-                                                 weakSelf.animatingToTab = NO;
-                                                 
-                                                 // Set the current page again to obtain synchronisation between tabs and content
-                                                 dispatch_async(dispatch_get_main_queue(), ^{
-                                                     [weakPageViewController setViewControllers:@[viewController]
-                                                                                      direction:(activeContentIndex < weakSelf.activeContentIndex) ? UIPageViewControllerNavigationDirectionReverse : UIPageViewControllerNavigationDirectionForward
-                                                                                       animated:NO
-                                                                                     completion:nil];
-                                                 });
+                                                 if (completed) {
+                                                     weakSelf.animatingToTab = NO;
+                                                     
+                                                     // Set the current page again to obtain synchronisation between tabs and content
+                                                     dispatch_async(dispatch_get_main_queue(), ^{
+                                                         [weakPageViewController setViewControllers:@[viewController]
+                                                                                          direction:(activeContentIndex < weakSelf.activeContentIndex) ? UIPageViewControllerNavigationDirectionReverse : UIPageViewControllerNavigationDirectionForward
+                                                                                           animated:NO
+                                                                                         completion:nil];
+                                                     });
+                                                 }
                                              }];
         });
         
