@@ -123,14 +123,7 @@
 }
 
 - (void) setViewControllers:(NSArray*)viewControllers direction:(UIPageViewControllerNavigationDirection)direction animated:(BOOL)animated completion:(void (^)(BOOL))completion {
-    
-    if (!animated) {
-        [super setViewControllers:viewControllers direction:direction animated:NO completion:completion];
-        return;
-    }
-    
     [super setViewControllers:viewControllers direction:direction animated:YES completion:^(BOOL finished){
-        
         if (finished) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [super setViewControllers:viewControllers direction:direction animated:NO completion:completion];
